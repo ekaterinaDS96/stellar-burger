@@ -1,54 +1,63 @@
-import { FC, SyntheticEvent } from 'react';
+import { FC, SyntheticEvent, FormEvent, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { ProfileUI } from '@ui-pages';
+import { useSelector, useDispatch } from '../../services/store';
+import { update } from '../../services/slices/userSlice';
 
 export const Profile: FC = () => {
-  // const [formValue, setFormValue] = useState({
-  //   name: user.name,
-  //   email: user.email,
-  //   password: ''
-  // });
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.user!);
 
-  // useEffect(() => {
-  //   setFormValue((prevState) => ({
-  //     ...prevState,
-  //     name: user?.name || '',
-  //     email: user?.email || ''
-  //   }));
-  // }, [user]);
+  const [formValue, setFormValue] = useState({
+    name: user.name,
+    email: user.email,
+    password: ''
+  });
 
-  // const isFormChanged =
-  //   formValue.name !== user?.name ||
-  //   formValue.email !== user?.email ||
-  //   !!formValue.password;
+  useEffect(() => {
+    setFormValue((prevState) => ({
+      ...prevState,
+      name: user?.name || '',
+      email: user?.email || ''
+    }));
+  }, [user]);
 
-  const handleSubmit = (e: SyntheticEvent) => {
+  const isFormChanged =
+    formValue.name !== user?.name ||
+    formValue.email !== user?.email ||
+    !!formValue.password;
+
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+    dispatch(update(formValue));
   };
 
   const handleCancel = (e: SyntheticEvent) => {
     e.preventDefault();
-    // setFormValue({
-    //   name: user.name,
-    //   email: user.email,
-    //   password: ''
-    // });
+    setFormValue({
+      name: user.name,
+      email: user.email,
+      password: ''
+    });
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // setFormValue((prevState) => ({
-    //   ...prevState,
-    //   [e.target.name]: e.target.value
-    // }));
+    setFormValue((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value
+    }));
   };
 
-  // return (
-  //   <ProfileUI
-  //     formValue={formValue}
-  //     isFormChanged={isFormChanged}
-  //     handleCancel={handleCancel}
-  //     handleSubmit={handleSubmit}
-  //     handleInputChange={handleInputChange}
-  //   />
-  // );
+  return (
+    <ProfileUI
+      formValue={formValue}
+      isFormChanged={isFormChanged}
+      handleCancel={handleCancel}
+      handleSubmit={handleSubmit}
+      handleInputChange={handleInputChange}
+    />
+  );
 
   return null;
 };

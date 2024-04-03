@@ -1,4 +1,4 @@
-import { ThunkAction, ThunkDispatch, thunk } from 'redux-thunk';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
 import {
   TypedUseSelectorHook,
@@ -6,22 +6,18 @@ import {
   useSelector as selectorHook
 } from 'react-redux';
 
-const store = {};
+import { rootReducer } from './rootReducer';
 
-export type RootState = any;
+const store = configureStore({
+  reducer: rootReducer,
+  devTools: process.env.NODE_ENV !== 'production'
+});
 
-type TApplicationActions = any;
+export type RootState = ReturnType<typeof store.getState>;
 
-export type AppThunk<Return = void> = ThunkAction<
-  Return,
-  RootState,
-  unknown,
-  TApplicationActions
->;
+export type AppDispatch = typeof store.dispatch;
 
-export type AppDispatch = ThunkDispatch<RootState, never, TApplicationActions>;
-
-export const useDispatch = () => dispatchHook<AppDispatch>();
+export const useDispatch: () => AppDispatch = () => dispatchHook();
 export const useSelector: TypedUseSelectorHook<RootState> = selectorHook;
 
 export default store;
