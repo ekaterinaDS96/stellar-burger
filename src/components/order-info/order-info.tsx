@@ -64,6 +64,7 @@ export const OrderInfo: FC = () => {
 
   useEffect(() => {
     getOrderByNumberApi(Number(id)).then((data) => {
+      console.log(data);
       setOrderData(data.orders[0]);
     });
   }, []);
